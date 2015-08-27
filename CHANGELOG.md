@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## 0.0.2 - 2015-08-27
+
+### Fixed
+
+- Fixed opening multiple windows when closing tabs too fast.
+
+### Changed
+
+- Improved and simplified the way of detecting is it required to open window.
+
+
 ## 0.0.1 - 2015-08-25
 
 ### Added

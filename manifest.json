@@ -3,7 +3,7 @@
   "name": "Keep Tab",
   "description": "Opens New Tab when closing last tab in last window",
   "author": "Mikhail Kalashnik <splurov@gmail.com>",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "background": {
     "scripts": ["background.js"],
     "persistent": false

@@ -2,52 +2,41 @@
 
 var DEBUG = false;
 
-function checkWindows() {
-    return new Promise(function(resolve) {
-        chrome.windows.getAll(function(windows) {
-            var normalWindows = windows.filter(function(window) {
-                return (window.type && window.type === 'normal');
-            });
-
-            DEBUG && console.log('windows count', windows.length);
-            DEBUG && console.log('normal windows count', normalWindows.length);
-
-            if (normalWindows.length <= 1) {
-                resolve();
-            }
-        });
-    });
-}
-
-function checkTabs() {
-    return new Promise(function(resolve) {
-        chrome.tabs.query({}, function(tabs) {
-            DEBUG && console.log('tabs count', tabs.length);
-
-            if (tabs.length === 0) {
-                resolve();
-            }
-        });
-    });
-}
-
-function createTab() {
-    DEBUG && console.log('before tab created');
-
-    chrome.windows.create();
-}
+var checkWindowClosing = false;
 
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
     DEBUG && console.log('tab removed');
+
     if (removeInfo.isWindowClosing) {
         DEBUG && console.log('do nothing due to window closing');
+
         return;
     }
 
-    checkWindows()
-        .then(checkTabs)
-        .then(createTab)
-        .catch(function(e) {
-            throw new Error(e);
+    checkWindowClosing = true;
+});
+
+chrome.windows.onRemoved.addListener(function() {
+    DEBUG && console.log('window removed');
+
+    if (!checkWindowClosing) {
+        return;
+    }
+
+    checkWindowClosing = false;
+
+    DEBUG && console.log('tab was closed');
+
+    chrome.windows.getAll(function(windows) {
+        var isOtherWindowOpened = windows.some(function(window) {
+            return (window.type && window.type === 'normal');
         });
+
+        DEBUG && console.log('all windows count', windows.length);
+        DEBUG && console.log('is other “normal” window opened', isOtherWindowOpened);
+
+        if (!isOtherWindowOpened) {
+            chrome.windows.create();
+        }
+    });
 });

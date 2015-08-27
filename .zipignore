@@ -1,0 +1,6 @@
+.gitingore
+.idea
+.zipignore
+CHANGELOG.md
+keep-tab.iml
+Makefile
